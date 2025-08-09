@@ -18,6 +18,20 @@
         .modal {
             transition: opacity 0.25s ease;
         }
+        /* Styling untuk scrollbar di konten modal */
+        .modal-content-scroll::-webkit-scrollbar {
+            width: 8px;
+        }
+        .modal-content-scroll::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+        .modal-content-scroll::-webkit-scrollbar-thumb {
+            background: #888;
+            border-radius: 4px;
+        }
+        .modal-content-scroll::-webkit-scrollbar-thumb:hover {
+            background: #555;
+        }
     </style>
 </head>
 <body class="bg-gray-100 text-gray-800">
@@ -49,9 +63,26 @@
                         <label for="year" class="block text-sm font-medium text-gray-700 mb-1">Tahun Terbit</label>
                         <input type="number" id="year" name="year" min="1900" max="2100" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required>
                     </div>
-                    <div class="mb-6">
+                     <div class="mb-4">
+                        <label class="block text-sm font-medium text-gray-700 mb-2">Jenis Buku</label>
+                        <div class="flex items-center space-x-4">
+                            <div class="flex items-center">
+                                <input id="type-cetak" name="bookType" type="radio" value="Cetak" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500" checked>
+                                <label for="type-cetak" class="ml-2 block text-sm text-gray-900">Buku Cetak</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input id="type-elektronik" name="bookType" type="radio" value="Elektronik" class="h-4 w-4 text-blue-600 border-gray-300 focus:ring-blue-500">
+                                <label for="type-elektronik" class="ml-2 block text-sm text-gray-900">Buku Elektronik</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-4">
                         <label for="synopsis" class="block text-sm font-medium text-gray-700 mb-1">Sinopsis Singkat</label>
-                        <textarea id="synopsis" name="synopsis" rows="4" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required></textarea>
+                        <textarea id="synopsis" name="synopsis" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" required></textarea>
+                    </div>
+                    <div class="mb-6">
+                        <label for="content" class="block text-sm font-medium text-gray-700 mb-1">Isi Buku (Teks Lengkap)</label>
+                        <textarea id="content" name="content" rows="5" class="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500" placeholder="Salin dan tempel seluruh isi teks buku di sini... (opsional)"></textarea>
                     </div>
                     <button type="submit" id="submit-btn" class="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors duration-300">
                         Hasilkan Kode & Barcode
@@ -63,12 +94,10 @@
             <div id="result-section" class="bg-white p-6 rounded-lg shadow-md hidden">
                 <h2 class="text-2xl font-semibold mb-4 border-b pb-2">2. Hasil Kode Buku</h2>
                 
-                <!-- Pesan Loading -->
                 <div id="loading-message" class="text-center py-10 hidden">
                     <p class="text-gray-600 animate-pulse">Menganalisis data dan membuat kode...</p>
                 </div>
 
-                <!-- Konten Hasil -->
                 <div id="result-content" class="hidden">
                     <div class="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4 rounded-md" role="alert">
                       <p class="font-bold">Berhasil!</p>
@@ -86,11 +115,9 @@
                         
                         <p class="text-sm font-medium text-gray-600 mt-4">Barcode:</p>
                         <div class="flex justify-center mt-2">
-                           <!-- Barcode akan digambar di canvas ini -->
                            <canvas id="barcode-canvas"></canvas>
                         </div>
 
-                        <!-- Tombol Unduh -->
                         <button id="download-btn" class="w-full mt-6 bg-green-600 text-white font-bold py-2 px-4 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors duration-300 hidden">
                             Unduh Barcode (JPG)
                         </button>
@@ -102,7 +129,7 @@
         <!-- Bagian Pindai/Cari Kode -->
         <div id="scan-section" class="mt-8 bg-white p-6 rounded-lg shadow-md">
             <h2 class="text-2xl font-semibold mb-4 border-b pb-2">3. Pindai atau Cari Nomor Buku</h2>
-            <p class="text-gray-600 mb-4">Masukkan nomor unik buku untuk melihat informasi detailnya. Ini mensimulasikan hasil pemindaian barcode.</p>
+            <p class="text-gray-600 mb-4">Masukkan nomor unik buku untuk melihat informasi detailnya.</p>
             <div class="flex flex-col sm:flex-row gap-2">
                 <input type="text" id="search-code" placeholder="Contoh: 1678..." class="flex-grow px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500">
                 <button id="search-btn" class="bg-gray-700 text-white font-bold py-2 px-6 rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors duration-300">
@@ -111,7 +138,6 @@
             </div>
         </div>
         
-        <!-- Footer -->
         <footer class="text-center mt-12 text-sm text-gray-500">
             <p>&copy; 2025 CV Ragam Literasi Indonesia. Hak Cipta Dilindungi.</p>
         </footer>
@@ -121,7 +147,7 @@
     <div id="info-modal" class="modal fixed inset-0 bg-black bg-opacity-50 z-50 hidden items-center justify-center p-4">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-lg p-6 relative">
             <button id="close-modal" class="absolute top-3 right-3 text-gray-500 hover:text-gray-800 text-3xl">&times;</button>
-            <h2 id="modal-title" class="text-2xl font-bold mb-4">Informasi Detail Buku</h2>
+            <h2 class="text-2xl font-bold mb-4">Informasi Detail Buku</h2>
             <div id="modal-content" class="space-y-2">
                 <!-- Konten akan diisi oleh JavaScript -->
             </div>
@@ -143,16 +169,13 @@
         const downloadBtn = document.getElementById('download-btn');
         const barcodeCanvas = document.getElementById('barcode-canvas');
 
-        // Elemen untuk menampilkan hasil
         const resultTitle = document.getElementById('result-title');
         const resultAuthor = document.getElementById('result-author');
         const resultCode = document.getElementById('result-code');
         
-        // Elemen untuk pencarian
         const searchBtn = document.getElementById('search-btn');
         const searchInput = document.getElementById('search-code');
 
-        // Elemen Modal
         const infoModal = document.getElementById('info-modal');
         const closeModalBtn = document.getElementById('close-modal');
         const modalContent = document.getElementById('modal-content');
@@ -175,11 +198,12 @@
                     title: formData.get('title'),
                     author: formData.get('author'),
                     year: formData.get('year'),
+                    bookType: formData.get('bookType'),
                     synopsis: formData.get('synopsis'),
+                    content: formData.get('content'),
                     publisher: 'CV Ragam Literasi Indonesia'
                 };
 
-                // Buat kode unik numerik (9 digit terakhir dari timestamp)
                 const uniqueCode = String(Date.now()).slice(-9);
                 
                 localStorage.setItem(uniqueCode, JSON.stringify(bookData));
@@ -188,14 +212,13 @@
                 resultAuthor.textContent = bookData.author;
                 resultCode.textContent = uniqueCode;
 
-                // Generate barcode di canvas
                 try {
                     JsBarcode(barcodeCanvas, uniqueCode, {
                         format: "CODE128",
                         lineColor: "#000",
                         width: 2,
                         height: 60,
-                        displayValue: true, // Tampilkan nomor di bawah barcode
+                        displayValue: true,
                         textPosition: "bottom",
                         textMargin: 5,
                         fontSize: 18,
@@ -204,7 +227,6 @@
                     });
                 } catch (e) {
                     console.error("Error generating barcode:", e);
-                    // Jika ada error (misal kode tidak valid), tampilkan pesan
                     const ctx = barcodeCanvas.getContext('2d');
                     ctx.clearRect(0, 0, barcodeCanvas.width, barcodeCanvas.height);
                     ctx.fillStyle = 'red';
@@ -212,7 +234,6 @@
                     ctx.textAlign = 'center';
                     ctx.fillText('Gagal membuat barcode.', barcodeCanvas.width / 2, barcodeCanvas.height / 2);
                 }
-
 
                 loadingMessage.classList.add('hidden');
                 resultContent.classList.remove('hidden');
@@ -222,18 +243,15 @@
                 submitBtn.textContent = 'Hasilkan Kode & Barcode';
                 bookForm.reset();
 
-            }, 1500); // delay 1.5 detik
+            }, 1500);
         });
 
         // --- Event Listener untuk Tombol Unduh ---
         downloadBtn.addEventListener('click', function() {
             const codeToDownload = resultCode.textContent;
             const link = document.createElement('a');
-            
-            // Konversi canvas ke format JPG
             link.href = barcodeCanvas.toDataURL('image/jpeg', 1.0);
             link.download = `barcode-${codeToDownload}.jpg`;
-            
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -254,14 +272,28 @@
 
             if (storedData) {
                 const bookData = JSON.parse(storedData);
+                const bookTypeClass = bookData.bookType === 'Cetak' ? 'text-blue-600' : 'text-green-600';
+                const formattedContent = bookData.content ? bookData.content.replace(/\n/g, '<br>') : '<i>Tidak ada konten lengkap yang disediakan.</i>';
+
                 modalContent.innerHTML = `
                     <p><strong>Nomor Buku:</strong> <span class="font-mono bg-gray-100 p-1 rounded">${codeToSearch}</span></p>
+                    <p><strong>Jenis Buku:</strong> <span class="font-semibold ${bookTypeClass}">${bookData.bookType}</span></p>
                     <p><strong>Judul Buku:</strong> ${bookData.title}</p>
                     <p><strong>Penulis:</strong> ${bookData.author}</p>
                     <p><strong>Tahun Terbit:</strong> ${bookData.year}</p>
                     <p><strong>Penerbit:</strong> ${bookData.publisher}</p>
-                    <p class="mt-4"><strong>Sinopsis:</strong></p>
-                    <p class="text-gray-600 border-l-2 border-gray-200 pl-3">${bookData.synopsis}</p>
+                    <div class="mt-4 pt-4 border-t">
+                        <p class="font-semibold">Sinopsis:</p>
+                        <p class="text-gray-600 border-l-2 border-gray-200 pl-3 mt-1">${bookData.synopsis}</p>
+                    </div>
+                    <div class="mt-4 pt-4 border-t">
+                        <details>
+                            <summary class="font-semibold cursor-pointer hover:text-blue-700">Lihat Isi Buku Lengkap</summary>
+                            <div class="modal-content-scroll mt-2 p-3 bg-gray-50 rounded-md max-h-48 overflow-y-auto text-sm">
+                                ${formattedContent}
+                            </div>
+                        </details>
+                    </div>
                 `;
             } else {
                 modalError.classList.remove('hidden');
